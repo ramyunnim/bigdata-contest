@@ -1,0 +1,75 @@
+SELECT   A.PLACE_NAME,
+         A.MARKET_NAME,
+         SUBSTR(A.TRADE_DATE,0,4) || '-' || SUBSTR(A.TRADE_DATE,5,2) || '-' || SUBSTR(A.TRADE_DATE,7,2) TRADE_DATE,
+         A.AVG_PRICE,
+         A.MAX_PRICE,
+         A.MIN_PRICE,
+         A.VOLUME,
+         B.SLFR_DXD SO2,
+         B.CRBN_MNXD CO,
+         B.OZON O3,
+         B.NTRGN_DXD NO2,
+         B.PARTICLE_MATTER_10 PM10,
+         B.PARTICLE_MATTER_2 PM2,
+         C.AVG_TMPRT,
+         C.DAY_PRE,
+         C.AVG_WND_SPD,
+         C.WND_DRCTN,
+         C.TOT_DYL_TM,
+         C.AVG_CLOUD,
+         C.TOT_SOLAR
+FROM     AGRICULTURE_2018 A,
+         FINE_DUST_2018 B,
+         WEATHER_DATA_2018 C
+WHERE    A.TRADE_DATE = B.MEASURE_DATE
+AND      A.PLACE_NAME = B.SIDO
+AND      A.TRADE_DATE = C.MEA_DATE
+AND      A.PLACE_NAME = C.AREA
+AND      A.PLACE_NAME = '부산'
+AND      A.MARKET_NAME = '창원팔용도매시장'
+ORDER BY TRADE_DATE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT *
+FROM   AGRICULTURE_2010 a2
+WHERE  place_name  = '충남'
+AND    market_name = '대전노은도매'
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT DISTINCT market_name FROM AGRICULTURE_2010 a2
+WHERE a2.PLACE_NAME = '충남'
+
+
+
+
+
+
+
+
+SELECT DISTINCT place_name FROM AGRICULTURE_2010 a2
