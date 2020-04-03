@@ -1,0 +1,234 @@
+SELECT volume, trade_date, place_name, market_name FROM FARM_PRODUCE_2015 fp2
+WHERE fp2.VOLUME IS NOT NULL
+
+INSERT INTO agriculture_2015(volume)
+
+
+SELECT volume FROM (SELECT * FROM FARM_PRODUCE_2015 fp2
+GROUP BY fp2.TRADE_DATE, fp2.MARKET_NAME, fp2.PLACE_NAME) p2
+WHERE p2.VOLUME IS NOT NULL and p2.TRADE_DATE = a2.TRADE_DATE and p2.MARKET_NAME = a2.MARKET_NAME and p2.PLACE_NAME = a2.PLACE_NAME
+
+
+SELECT trade_date, PLACE_NAME, market_name FROM FARM_PRODUCE_2015 fp2
+GROUP BY fp2.TRADE_DATE, fp2.MARKET_NAME, fp2.PLACE_NAME
+
+SELECT * FROM AGRICULTURE_2015 a2
+
+SELECT * FROM FARM_PRODUCE_2015 fp2
+WHERE TRADE_DATE = '20151210' AND volume IS null
+
+SELECT * FROM FARM_PRODUCE_2015 fp2
+WHERE fp2.VOLUME IS NULL
+
+
+SELECT *
+FROM  ( SELECT  TRADE_DATE,
+                MARKET_NAME,
+                CASE
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '경상남도'
+                         THEN '경남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '경상북도'
+                         THEN '경북'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '전라남도'
+                         THEN '전남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '전라북도'
+                         THEN '전북'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '충청남도'
+                         THEN '충남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '충청북도'
+                         THEN '충북'
+                         ELSE SUBSTR(PLACE_NAME,0,4)
+                END PLACE_NAME,
+                MAX(ITEM),
+                MAX(SUBSTR(UNIT,0,2)),
+                ROUND(AVG(AVG_PRICE/CONTAINER),0),
+                ROUND(AVG(MAX_PRICE/CONTAINER),0),
+                ROUND(AVG(MIN_PRICE/CONTAINER),0),
+                SUM(VOLUME)
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,4) IN ('경상남도',
+                                           '경상북도',
+                                           '전라남도',
+                                           '전라북도',
+                                           '충청남도',
+                                           '충청북도')
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,4),
+                MARKET_NAME
+       
+       UNION ALL
+       
+       SELECT   TRADE_DATE,
+                MARKET_NAME,
+                CASE
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '경기도'
+                         THEN '경기'
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '강원도'
+                         THEN '강원'
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '제주도'
+                         THEN '제주'
+                         ELSE SUBSTR(PLACE_NAME,0,3)
+                END PLACE_NAME,
+                MAX(ITEM),
+                MAX(SUBSTR(UNIT,0,2)),
+                ROUND(AVG(AVG_PRICE/CONTAINER),0),
+                ROUND(AVG(MAX_PRICE/CONTAINER),0),
+                ROUND(AVG(MIN_PRICE/CONTAINER),0),
+                SUM(VOLUME)
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,3) IN ('경기도',
+                                           '강원도',
+                                           '제주도')
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,3),
+                MARKET_NAME
+       
+       UNION ALL
+       
+       SELECT   TRADE_DATE,
+                MARKET_NAME,
+                SUBSTR(PLACE_NAME,0,2) PLACE_NAME,
+                MAX(ITEM),
+                MAX(SUBSTR(UNIT,0,2)),
+                ROUND(AVG(AVG_PRICE/CONTAINER),0),
+                ROUND(AVG(MAX_PRICE/CONTAINER),0),
+                ROUND(AVG(MIN_PRICE/CONTAINER),0),
+                SUM(VOLUME)
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,2) IN ('서울',
+                                           '인천',
+                                           '세종',
+                                           '대전',
+                                           '대구',
+                                           '광주',
+                                           '울산',
+                                           '부산')
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,2),
+                MARKET_NAME
+       )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DELETE FROM AGRICULTURE_2018;
+
+INSERT INTO AGRICULTURE_2018
+SELECT TRADE_DATE,
+       MARKET_NAME,
+       PLACE_NAME,
+       ITEM,
+       UNIT,
+       AVG_PRICE,
+       MAX_PRICE,
+       MIN_PRICE,
+       VOLUME
+FROM  ( SELECT  TRADE_DATE,
+                MARKET_NAME,
+                CASE
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '경상남도'
+                         THEN '경남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '경상북도'
+                         THEN '경북'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '전라남도'
+                         THEN '전남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '전라북도'
+                         THEN '전북'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '충청남도'
+                         THEN '충남'
+                         WHEN SUBSTR(PLACE_NAME,0,4) = '충청북도'
+                         THEN '충북'
+                         ELSE SUBSTR(PLACE_NAME,0,4)
+                END PLACE_NAME,
+                MAX(ITEM) ITEM,
+                MAX(SUBSTR(UNIT,0,2)) UNIT,
+                ROUND(AVG(AVG_PRICE/CONTAINER),0) AVG_PRICE,
+                ROUND(AVG(MAX_PRICE/CONTAINER),0) MAX_PRICE,
+                ROUND(AVG(MIN_PRICE/CONTAINER),0) MIN_PRICE,
+                SUM(VOLUME) VOLUME
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,4) IN ('경상남도',
+                                           '경상북도',
+                                           '전라남도',
+                                           '전라북도',
+                                           '충청남도',
+                                           '충청북도')
+          AND         GRADE_CODE = '11'
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,4),
+                MARKET_NAME
+       
+       UNION ALL
+       
+       SELECT   TRADE_DATE,
+                MARKET_NAME,
+                CASE
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '경기도'
+                         THEN '경기'
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '강원도'
+                         THEN '강원'
+                         WHEN SUBSTR(PLACE_NAME,0,3) = '제주도'
+                         THEN '제주'
+                         ELSE SUBSTR(PLACE_NAME,0,3)
+                END PLACE_NAME,
+                MAX(ITEM) ITEM,
+                MAX(SUBSTR(UNIT,0,2)) UNIT,
+                ROUND(AVG(AVG_PRICE/CONTAINER),0) AVG_PRICE,
+                ROUND(AVG(MAX_PRICE/CONTAINER),0) MAX_PRICE,
+                ROUND(AVG(MIN_PRICE/CONTAINER),0) MIN_PRICE,
+                SUM(VOLUME) VOLUME
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,3) IN ('경기도',
+                                           '강원도',
+                                           '제주도')
+       AND         GRADE_CODE = '11'
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,3),
+                MARKET_NAME
+       
+       UNION ALL
+       
+       SELECT   TRADE_DATE,
+                MARKET_NAME,
+                SUBSTR(PLACE_NAME,0,2) PLACE_NAME,
+                MAX(ITEM) ITEM,
+                MAX(SUBSTR(UNIT,0,2)) UNIT,
+                ROUND(AVG(AVG_PRICE/CONTAINER),0) AVG_PRICE,
+                ROUND(AVG(MAX_PRICE/CONTAINER),0) MAX_PRICE,
+                ROUND(AVG(MIN_PRICE/CONTAINER),0) MIN_PRICE,
+                SUM(VOLUME) VOLUME
+       FROM     FARM_PRODUCE_2018
+       WHERE    SUBSTR(PLACE_NAME,0,2) IN ('서울',
+                                           '인천',
+                                           '세종',
+                                           '대전',
+                                           '대구',
+                                           '광주',
+                                           '울산',
+                                           '부산')
+       AND         GRADE_CODE = '11'
+       GROUP BY TRADE_DATE,
+                SUBSTR(PLACE_NAME,0,2),
+                MARKET_NAME
+       )

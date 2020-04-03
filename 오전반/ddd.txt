@@ -1,0 +1,56 @@
+install.packages("readxl")
+                 
+library("readxl")
+mpg <- read_excel("2018충북_대구북부도매.xlsx")
+str(mpg)
+mpg$DAY_PRE <- ifelse(is.na(mpg$DAY_PRE), 0, mpg$DAY_PRE)
+mean(mpg$TOT_SOLAR, na.rm = T)
+mean(mpg$TOT_DYL_TM, na.rm = T)
+mpg
+mpg$TOT_SOLAR <- ifelse(is.na(mpg$TOT_SOLAR), 13.93, mpg$TOT_SOLAR)
+with(mpg, cor(x=TOT_SOLAR, y=WND_DRCTN, use="complete.obs", method=c("pearson")))
+
+install.packages("readxl")
+                 
+library("readxl")
+mpg <- read_excel("2018강원.xlsx")
+str(mpg)
+with(mpg, cor(x=PM10, y=AVG_TMPRT, use="complete.obs", method=c("pearson")))
+                                                
+#with(mpg, cor(x=AVG_PRICE, y=VOLUME, use="complete.obs", method=c("pearson"))
+
+library("readxl")
+library("dygraphs")
+library("zoo")
+library("xts")
+library("ggplot2")
+library("plotly")
+library(stringr)
+
+
+rm(list = ls())
+domae <- read_excel("강원-대구북부 월별 평균.xlsx")
+head(domae)
+domae$TRADE_DATE <- str_sub(domae$TRADE_DATE, 3, 6)
+p2 <- ggplot(data = domae, aes(x = domae$TRADE_DATE, group = 1)) + geom_line(aes(y = domae$PRICE, colour = "가격"))
+p2 <- p2 + geom_line(aes(y = domae$CLOUD*10, colour="전운량"))
+p2 <- p2 + scale_y_continuous(sec.axis = sec_axis(~./10, name = "전운량"))
+p2 <- p2 + labs(y = "가격",
+                x = "날짜",
+                colur = "범주") + theme_light()
+p2
+
+
+
+rm(list=ls())
+
+library('readxl')
+library('ggplot2')
+weather <- read_excel("2018충북_대구북부도매.xlsx")
+str(weather)
+with(weather, cor(x=AVG_WND_SPD, y=SO2, use="complete.obs", method=c("pearson")))
+ggplot(data=weather, aes(x=PLACE_NAME, y=AVG_PRICE, group=1)) + geom_boxplot()
+par(mfrow=c(3,1))
+qplot(data=weather, x="PLACE_NAME", y="AVG_PRICE", geom="boxplot")
+boxplot(data=weather, MAX_PRICE~PLACE_NAME, xlab="PLACE_NAME", ylab="MAX_PRICE", main="Boxplot of MAX_PRICE and PLACE_NAME")
+boxplot(data=weather, MIN_PRICE~PLACE_NAME, xlab="PLACE_NAME", ylab="MIN_PRICE", main="Boxplot of MIN_PRICE and PLACE_NAME")
